@@ -123,10 +123,10 @@ function configure() {
   fi
 
   echo 'Replacing environment variables in files'
-  safesed "replaceuser" $DB_USER /usr/local/tomcat/webapps/$CONTEXT_PATH/WEB-INF/hibernate.cfg.xml
-  safesed "replacepassword" $DB_PASSWORD /usr/local/tomcat/webapps/$CONTEXT_PATH/WEB-INF/hibernate.cfg.xml
-  safesed "replacecontainer" $DB_HOST /usr/local/tomcat/webapps/$CONTEXT_PATH/WEB-INF/hibernate.cfg.xml
-  safesed "replacedatabase" $DB_DATABASE /usr/local/tomcat/webapps/$CONTEXT_PATH/WEB-INF/hibernate.cfg.xml
+  # safesed "replaceuser" $DB_USER /usr/local/tomcat/webapps/$CONTEXT_PATH/WEB-INF/hibernate.cfg.xml
+  # safesed "replacepassword" $DB_PASSWORD /usr/local/tomcat/webapps/$CONTEXT_PATH/WEB-INF/hibernate.cfg.xml
+  # safesed "replacecontainer" $DB_HOST /usr/local/tomcat/webapps/$CONTEXT_PATH/WEB-INF/hibernate.cfg.xml
+  # safesed "replacedatabase" $DB_DATABASE /usr/local/tomcat/webapps/$CONTEXT_PATH/WEB-INF/hibernate.cfg.xml
 
   # Set any non-default main wiki database name in the xwiki.cfg file.
   if [ "$DB_DATABASE" != "xwiki" ]; then
@@ -134,13 +134,13 @@ function configure() {
   fi
 
   echo '  Generating authentication validation and encryption keys...'
-  xwiki_set_cfg 'xwiki.authentication.validationKey' "$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)"
-  xwiki_set_cfg 'xwiki.authentication.encryptionKey' "$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)"
+  # xwiki_set_cfg 'xwiki.authentication.validationKey' "$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)"
+  # xwiki_set_cfg 'xwiki.authentication.encryptionKey' "$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)"
 
   echo '  Setting permanent directory...'
-  xwiki_set_properties 'environment.permanentDirectory' '/usr/local/xwiki/data'
+  # xwiki_set_properties 'environment.permanentDirectory' '/usr/local/xwiki/data'
   echo '  Configure libreoffice...'
-  xwiki_set_properties 'openoffice.autoStart' 'true'
+  # xwiki_set_properties 'openoffice.autoStart' 'true'
 
   if [ $INDEX_HOST != 'localhost' ]; then
     echo '  Configuring remote Solr Index'
@@ -164,16 +164,7 @@ if [ "${1:0:1}" = '-' ]; then
 fi
 
 # Check for the expected command
-if [ "$1" = 'xwiki' ]; then
-  file_env 'CONTEXT_PATH' 'ROOT'
-  if [[ ! -f /usr/local/tomcat/webapps/$CONTEXT_PATH/.first_start_completed ]]; then
-    first_start
-  else
-    other_starts
-  fi
-  shift
-  set -- catalina.sh run "$@"
-fi
+set -- catalina.sh run "$@"
 
 # Else default to run whatever the user wanted like "bash"
 exec "$@"
